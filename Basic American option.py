@@ -118,7 +118,7 @@ class Bermuda_pricing:
             ax.legend()
     
     def lb_price(self,coef_list,n_paths=100000,vol=0.2,q=0.02,mode="quad_poly"): #compatible with quadratic basis
-        self.coef_list=self.coef_list.reverse()
+        self.coef_list=self.coef_list[::-1]
         exercised=[False]*n_paths
         memory_list=[0]*n_paths
         exercise_time=[self.ts[-1]]*n_paths
