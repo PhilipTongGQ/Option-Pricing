@@ -31,7 +31,7 @@ class neural_fit(Bermuda_pricing):
             self.fitted.append(model)
 
     def forward(self,n_paths=50000,vol=0.2,q=0.02):
-        coef_list=self.fitted
+        coef_list=self.fitted.reverse()
         self.backward()
         exercised=[False]*n_paths
         memory_list=[0]*n_paths
