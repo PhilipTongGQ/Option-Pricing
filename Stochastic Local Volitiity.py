@@ -101,7 +101,7 @@ class SLV:
             l=self.sigma_0/interpolate_a(paths[i+1])
             if self.get_l:
                 self.l_full[i]=interpolate_a(paths[i+1])
-        return paths,l
+        return paths,interpolate_a(paths[i+1])
     
     def get_leverage(self,at_i=2):
         if at_i<=1:
