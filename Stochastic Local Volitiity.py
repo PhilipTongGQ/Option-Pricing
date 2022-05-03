@@ -13,7 +13,8 @@ class SLV:
         self.get_price=get_price
         self.get_vol=get_vol
         self.get_l=get_l
-        self.l_full=np.empty((len(self.ts)-1,self.nnewpaths))
+        #self.l_full=np.empty((len(self.ts)-1,self.nnewpaths))
+        self.l_full=[]
         self.a_grid=self._mc()
         if self.get_price:                                                                                       #independent run
             self.fullpaths,self.l=self._simulate()
@@ -66,7 +67,7 @@ class SLV:
     def _a(self,i,j,a,paths,paths_knots,bandwidth):
         numerator=np.sum(a**2*self.quartic_kernel(paths[i+1]-paths_knots[j],bandwidth))
         denominator=np.sum(self.quartic_kernel(paths[i+1]-paths_knots[j],bandwidth))
-        return np.where(denominator==0,0,np.sqrt(numerator/denominator))
+        return np.sqrt(numerator/denominator) if denominator!=0 else 0
 
     def _mc(self,paths_knots=np.linspace(63,159,41)):
         paths,Y = np.full((len(self.ts), self.n_paths), np.nan, dtype=np.float64),np.full((len(self.ts), self.n_paths), np.nan, dtype=np.float64)
@@ -100,7 +101,7 @@ class SLV:
             interpolate_a=interp1d(paths_knots,self.a_grid[i+1],kind="cubic",fill_value="extrapolate")
             l=self.sigma_0/interpolate_a(paths[i+1])
             if self.get_l:
-                self.l_full[i]=interpolate_a(paths[i+1])
+                self.l_full.append(interp1d(paths_knots,self.a_grid[i+1],kind="cubic",fill_value="extrapolate"))
         return paths,interpolate_a(paths[i+1])
     
     def get_leverage(self,at_i=2):
@@ -116,3 +117,4 @@ class SLV:
     def __repr__(self):
         if self.get_price:
             return "Option values are {}".format(self.price)+"\n"+"The volitilities are {}".format(self.implied_vol)
+               
